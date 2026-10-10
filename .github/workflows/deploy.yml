@@ -1,0 +1,50 @@
+name: Deploy preview
+
+# Publishes a branch of Little-Hammer-Labs/littlehammerlabs.com to new.littlehammerlabs.com.
+# Run manually: gh workflow run deploy -R Little-Hammer-Labs/preview [-f ref=<branch>]
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: Branch or commit of littlehammerlabs.com to publish
+        default: holdco-redesign
+        required: true
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Check out site source
+        uses: actions/checkout@v6
+        with:
+          repository: Little-Hammer-Labs/littlehammerlabs.com
+          ref: ${{ inputs.ref || 'holdco-redesign' }}
+          path: site
+
+      - name: Make it a preview
+        run: |
+          rm -f site/CNAME
+          rm -rf site/.github
+          printf 'User-agent: *\nDisallow: /\n' > site/robots.txt
+          rm -f site/sitemap.xml
+          echo "${{ inputs.ref || 'holdco-redesign' }} $(git -C site rev-parse --short HEAD)" > site/.preview-ref
+
+      - uses: actions/configure-pages@v6
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: site
+      - id: deployment
+        uses: actions/deploy-pages@v5

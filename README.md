@@ -9,4 +9,6 @@ gh workflow run deploy -R Little-Hammer-Labs/preview
 gh workflow run deploy -R Little-Hammer-Labs/preview -f ref=some-other-branch
 ```
 
+Which commit is live: https://new.littlehammerlabs.com/preview-ref.txt
+
 DNS: Cloudflare CNAME `new` → `little-hammer-labs.github.io` (DNS only). Pages custom domain is set in this repo's settings.

@@ -40,7 +40,7 @@ jobs:
           rm -rf site/.github
           printf 'User-agent: *\nDisallow: /\n' > site/robots.txt
           rm -f site/sitemap.xml
-          echo "${{ inputs.ref || 'holdco-redesign' }} $(git -C site rev-parse --short HEAD)" > site/.preview-ref
+          echo "${{ inputs.ref || 'holdco-redesign' }} $(git -C site rev-parse --short HEAD)" > site/preview-ref.txt
 
       - uses: actions/configure-pages@v6
       - uses: actions/upload-pages-artifact@v5
